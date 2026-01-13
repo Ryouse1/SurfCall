@@ -5,16 +5,27 @@
   <title>プロキシダウンロード</title>
 </head>
 <body>
-  <h1>URLを入力して即ダウンロード</h1>
-  <input type="text" id="url" placeholder="ダウンロードしたいファイルのURL">
-  <button onclick="download()">ダウンロード</button>
+  <h1>URL入力で即ダウンロード</h1>
+
+  <h2>単一ファイル</h2>
+  <input type="text" id="single-url" placeholder="ファイルのURL">
+  <button onclick="downloadSingle()">ダウンロード</button>
+
+  <h2>複数ファイル（カンマ区切りURL）</h2>
+  <textarea id="multi-urls" rows="5" cols="50" placeholder="URL1,URL2,URL3"></textarea>
+  <button onclick="downloadMultiple()">一括ダウンロード（ZIP）</button>
 
   <script>
-    function download() {
-      const url = document.getElementById('url').value;
+    function downloadSingle() {
+      const url = document.getElementById('single-url').value;
       if (!url) return alert("URLを入力してください");
-      // サーバーの /fetch にリダイレクトして即DL
       window.location.href = `/fetch?url=${encodeURIComponent(url)}`;
+    }
+
+    function downloadMultiple() {
+      const urls = document.getElementById('multi-urls').value;
+      if (!urls) return alert("URLを入力してください");
+      window.location.href = `/fetch-multiple?urls=${encodeURIComponent(urls)}`;
     }
   </script>
 </body>
