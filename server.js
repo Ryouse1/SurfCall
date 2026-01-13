@@ -2,27 +2,31 @@ const express = require('express');
 const fetch = require('node-fetch');
 const archiver = require('archiver');
 const path = require('path');
-
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 // 静的ファイル公開
 app.use(express.static(path.join(__dirname, 'public')));
 
+// ルートアクセスで index.html を返す
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
 // 単一ファイルDL
 app.get('/fetch', async (req, res) => {
   const fileUrl = req.query.url;
-  if (!fileUrl) return res.status(400).send("URLが必要です");
+  if (!fileUrl) return res.status(400).send("URL が必要です");
 
   try {
     const response = await fetch(fileUrl);
     if (!response.ok) return res.status(404).send("ファイル取得失敗");
 
     const fileName = fileUrl.split('/').pop() || 'downloaded_file';
+    res.setHeader('Content-Type', 'application/octet-stream');
     res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
     const buffer = await response.buffer();
     res.send(buffer);
-
   } catch (err) {
     console.error(err);
     res.status(500).send("エラー発生");
