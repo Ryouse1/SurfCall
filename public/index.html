@@ -3,6 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <title>プロキシダウンロード</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; }
+    input { width: 400px; }
+    button { margin-left: 5px; }
+    .url-item { margin-bottom: 5px; }
+  </style>
 </head>
 <body>
   <h1>URL入力で即ダウンロード</h1>
@@ -11,8 +17,14 @@
   <input type="text" id="single-url" placeholder="ファイルのURL">
   <button onclick="downloadSingle()">ダウンロード</button>
 
-  <h2>複数ファイル（カンマ区切りURL）</h2>
-  <textarea id="multi-urls" rows="5" cols="50" placeholder="URL1,URL2,URL3"></textarea>
+  <h2>複数ファイル（リスト形式）</h2>
+  <div id="url-list">
+    <div class="url-item">
+      <input type="text" placeholder="ファイルURL">
+      <button onclick="removeRow(this)">×</button>
+    </div>
+  </div>
+  <button onclick="addRow()">＋追加</button>
   <button onclick="downloadMultiple()">一括ダウンロード（ZIP）</button>
 
   <script>
@@ -22,10 +34,22 @@
       window.location.href = `/fetch?url=${encodeURIComponent(url)}`;
     }
 
+    function addRow() {
+      const div = document.createElement('div');
+      div.className = 'url-item';
+      div.innerHTML = '<input type="text" placeholder="ファイルURL"><button onclick="removeRow(this)">×</button>';
+      document.getElementById('url-list').appendChild(div);
+    }
+
+    function removeRow(btn) {
+      btn.parentElement.remove();
+    }
+
     function downloadMultiple() {
-      const urls = document.getElementById('multi-urls').value;
-      if (!urls) return alert("URLを入力してください");
-      window.location.href = `/fetch-multiple?urls=${encodeURIComponent(urls)}`;
+      const inputs = document.querySelectorAll('#url-list input');
+      const urls = Array.from(inputs).map(input => input.value).filter(u => u);
+      if (!urls.length) return alert("URLを入力してください");
+      window.location.href = `/fetch-multiple?urls=${encodeURIComponent(urls.join(','))}`;
     }
   </script>
 </body>
