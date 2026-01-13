@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>プロキシダウンロード</title>
+</head>
+<body>
+  <h1>URLを入力して即ダウンロード</h1>
+  <input type="text" id="url" placeholder="ダウンロードしたいファイルのURL">
+  <button onclick="download()">ダウンロード</button>
+
+  <script>
+    function download() {
+      const url = document.getElementById('url').value;
+      if (!url) return alert("URLを入力してください");
+      // サーバーの /fetch にリダイレクトして即DL
+      window.location.href = `/fetch?url=${encodeURIComponent(url)}`;
+    }
+  </script>
+</body>
+</html>
